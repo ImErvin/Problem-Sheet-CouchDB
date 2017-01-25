@@ -1,0 +1,28 @@
+Step 1:
+	curl http://127.0.0.1:5984/
+
+Step 2:
+	curl -X PUT http://127.0.0.1:5984/emails
+
+Step 3:
+	vi emails.json
+	curl -X POST http://127.0.0.1:5984/emails -H "Content-type: application/json" -d @emails.json
+
+Step 4:
+	vi emails1.json
+	curl -X POST http://127.0.0.1:5984/emails -H "Content-type: application/json" -d @emails1.json
+
+Step 5:
+	curl -X GET http://127.0.0.1:5984/emails/_all_docs
+	curl -X GET http://127.0.0.1:5984/emails/_all_docs?include_docs=true
+	curl -X GET http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6000548
+	curl -X GET http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6001d3f
+
+Step 6:
+	curl -X GET http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6001d3f
+	curl -X PUT http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6001d3f/ -d '{"from":"Dillon Ward", "content":"Hey! lets get a drink", "attachment":"false", "_rev":"2-dd46f1e9c527057b27587af8fb582aa2"}'
+	curl -X GET http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6001d3f
+
+Step 7:
+	curl -X DELETE http://127.0.0.1:5984/emails/9173f330117c56e29a325d4ae6000548?rev=1-d4f6aa0c748dacfbd2b2f146e7bc3755
+	curl -X GET http://127.0.0.1:5984/emails/_all_docs

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	 <div class="container">
+	 <br/>
+    <form action="http://127.0.0.1:5984/couchappdatabase" method="POST">
+      <div class="form-group">
+        <label for="jsonPaste">Paste in your JSON object:</label>
+        <input id="jsonTextArea" class="form-control" rows="6"></input>
+      </div>
+      <button type="submit" id="submit" class="btn btn-default">Submit</button>
+    </form>
+
+    <form action="http://127.0.0.1:5984/couchappdatabase" method="GET">
+      <div class="form-group">
+        <label for="jsonPaste">Result from Server:</label>
+        <textarea id="jsonReply" class="form-control" rows="6"></textarea>
+      </div>
+      <button type="submit" id="refresh" class="btn btn-default">Show Results</button>
+    </form>
+    </div>
+	
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+
+	<script>
+    var placeholderExample = 'Example: \n{"employees":\n[{"firstName":"John", "lastName":"Doe"},\n{"firstName":"Anna", "lastName":"Smith"},\n{"firstName":"Peter", "lastName":"Jones"}]}';
+	
+    $("#jsonTextArea").attr("placeholder",placeholderExample);
+	
+	//jQuery POST request to send the data in the input box to my database.
+	$("#submit").click(function(event){
+	  event.preventDefault();
+	  var data = JSON.parse($("#jsonTextArea").val());
+	  console.log(data);
+	 $.ajax({
+			url: 'http://127.0.0.1:5984/couchappdatabase',
+			type: 'POST',
+			data: JSON.stringify(data),
+			dataType: "json",
+			contentType: "application/json",
+			success: function (response) {
+				console.log("Success");
+			},
+			error: function (response){
+				alert("Ensure that your JSON Object follows correct notation")
+			}
+		});
+	});
+	
+	//jQuery GET request to retrieve the data to the text area from my database.
+	$("#refresh").click(function(event){
+	 event.preventDefault();
+	 $.ajax({
+			url: 'http://127.0.0.1:5984/couchappdatabase/_all_docs?include_docs=true',
+			type: 'GET',
+			data: "id",
+			dataType: "json",
+			contentType: "application/json",
+			success: function (data) {
+			  var responseDataID = JSON.stringify(data);
+			  var parsed = JSON.parse(responseDataID);
+			  console.log(parsed.rows[0]);
+			  $("#jsonReply").val(JSON.stringify(parsed));
+			}
+		});
+
+	  });
+	  
+	</script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>
